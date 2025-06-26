@@ -19,7 +19,7 @@
   </head>
   <body>
     <div>
-      <h2>Welcome! Redirecting you to your portal...</h2>
+      <h2>Welcome! Redirecting you to your pilates portal...</h2>
     </div>
 
     <script>
@@ -42,9 +42,9 @@
         .then(res => res.json())
         .then(data => {
           console.log("Make webhook response:", data);
-          if (data.magic_link) {
-            window.location.href = data.magic_link;
-          } else {
+         if (data.redirect) {
+  window.location.href = data.redirect;
+} else {
             document.body.innerHTML = `<h2>Waiting for link or error...<br>${JSON.stringify(data)}</h2>`;
           }
         })
