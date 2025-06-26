@@ -12,6 +12,8 @@
         align-items: center;
         height: 100vh;
         background: #fefefe;
+        text-align: center;
+        padding: 20px;
       }
     </style>
   </head>
@@ -21,19 +23,17 @@
     </div>
 
     <script>
-      // ✨ REPLACE these with actual data from Tally via query params
+      // Get Tally query parameters
       const urlParams = new URLSearchParams(window.location.search);
       const email = urlParams.get("email"); // e.g. ?email=liam@example.com
       const name = urlParams.get("name");   // e.g. ?name=Liam%20Smith
 
-      // 🔐 Your Softr API Key
-      const apiKey = "wCh7gd6sFBs6a2gh74kvHdy21";
+      // Softr API config
+      const apiKey = "wCh7gd6sFBs6a2gh74kvHdy21"; // 🔐 Your Softr API key
+      const domain = "sessionssync-nam33136.softr.app"; // 🌐 Your Softr domain
 
-      // 🌐 Your Softr domain
-      const domain = "sessionssync-nam33136.softr.app";
-
-      // 🔁 Call Softr API
-      fetch("https://studio-api.softr.io/v1/api/users", {
+      // Call Softr API to get magic link
+      fetch("https://studio-api.softr.io/v1/auth/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,11 +51,11 @@
           if (data.magic_link) {
             window.location.href = data.magic_link;
           } else {
-            document.body.innerHTML = "<h2>Something went wrong: " + JSON.stringify(data) + "</h2>";
+            document.body.innerHTML = `<h2>Something went wrong:<br>${JSON.stringify(data)}</h2>`;
           }
         })
         .catch(err => {
-          document.body.innerHTML = "<h2>Error: " + err.message + "</h2>";
+          document.body.innerHTML = `<h2>Error:<br>${err.message}</h2>`;
         });
     </script>
   </body>
