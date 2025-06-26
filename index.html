@@ -21,52 +21,37 @@
     <div>
       <h2>Welcome! Redirecting you to your portal...</h2>
     </div>
-    
+
     <script>
-  // Get Tally query parameters
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get("email"); // e.g. ?email=liam@example.com
-  const name = urlParams.get("name");   // e.g. ?name=Liam%20Smith
+      // Get Tally query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get("email");
+      const name = urlParams.get("name");
 
-  // Softr API config
-  const apiKey = "wCh7gd6sFBs6a2gh74kvHdy21"; // 🔐 Your Softr API key
-  const domain = "sessionssync-nam33136.softr.app"; // 🌐 Your Softr domain
+      // Log what we’re sending to Make
+      console.log("Sending to Make webhook:", { email, name });
 
-  // 🔍 Debug logs BEFORE sending
-  console.log("Sending request with:", {
-    email,
-    name,
-    domain,
-    apiKey
-  });
-
-  // Call Softr API to get magic link
-  fetch("https://studio-api.softr.io/v1/auth/user", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      email,
-      full_name: name,
-      domain,
-      generate_magic_link: true
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      console.log("Response from Softr:", data); // 📦 Response debug
-      if (data.magic_link) {
-        window.location.href = data.magic_link;
-      } else {
-        document.body.innerHTML = `<h2>Something went wrong:<br>${JSON.stringify(data)}</h2>`;
-      }
-    })
-    .catch(err => {
-      console.error("Fetch error:", err); // ❌ Error debug
-      document.body.innerHTML = `<h2>Error:<br>${err.message}</h2>`;
-    });
-</script>
+      // Send to your Make webhook
+      fetch("https://hook.us2.make.com/pyxu2ijoicq6bfr3eeixi8hfpu8juor7", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, name })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("Make webhook response:", data);
+          if (data.magic_link) {
+            window.location.href = data.magic_link;
+          } else {
+            document.body.innerHTML = `<h2>Waiting for link or error...<br>${JSON.stringify(data)}</h2>`;
+          }
+        })
+        .catch(err => {
+          console.error("Webhook error:", err);
+          document.body.innerHTML = `<h2>Error:<br>${err.message}</h2>`;
+        });
+    </script>
   </body>
 </html>
