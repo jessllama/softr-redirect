@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Logging you in...</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #fefefe;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h2>Welcome! Redirecting you to your portal...</h2>
+    </div>
+
+    <script>
+      // ✨ REPLACE these with actual data from Tally via query params
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get("email"); // e.g. ?email=liam@example.com
+      const name = urlParams.get("name");   // e.g. ?name=Liam%20Smith
+
+      // 🔐 Your Softr API Key
+      const apiKey = "wCh7gd6sFBs6a2gh74kvHdy21";
+
+      // 🌐 Your Softr domain
+      const domain = "sessionssync-nam33136.softr.app";
+
+      // 🔁 Call Softr API
+      fetch("https://studio-api.softr.io/v1/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          email,
+          full_name: name,
+          domain,
+          generate_magic_link: true
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.magic_link) {
+            window.location.href = data.magic_link;
+          } else {
+            document.body.innerHTML = "<h2>Something went wrong: " + JSON.stringify(data) + "</h2>";
+          }
+        })
+        .catch(err => {
+          document.body.innerHTML = "<h2>Error: " + err.message + "</h2>";
+        });
+    </script>
+  </body>
+</html>
