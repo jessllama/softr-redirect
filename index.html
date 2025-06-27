@@ -19,13 +19,18 @@
   </head>
   <body>
     <div>
-      <h2>Welcome! Redirecting you to your Pilates portal...</h2>
+      <h2>Welcome! Redirecting you to your pilates portal...</h2>
     </div>
 
     <script>
       const urlParams = new URLSearchParams(window.location.search);
       const email = urlParams.get("email");
       const name = urlParams.get("name");
+
+      if (!email || !name) {
+        document.body.innerHTML = `<h2>Missing email or name in the URL. 😬</h2>`;
+        throw new Error("Missing email or name");
+      }
 
       fetch("https://hook.us2.make.com/pyxu2ijoicq6bfr3eeixi8hfpu8juor7", {
         method: "POST",
@@ -36,14 +41,16 @@
       })
         .then(res => res.json())
         .then(data => {
+          console.log("Make webhook response:", data);
           if (data.redirect) {
             window.location.href = data.redirect;
           } else {
-            document.body.innerHTML = `<h2>No redirect link yet.<br>${JSON.stringify(data)}</h2>`;
+            document.body.innerHTML = `<h2>Hmm, no link received. Please try again or contact support.</h2><pre>${JSON.stringify(data)}</pre>`;
           }
         })
         .catch(err => {
-          document.body.innerHTML = `<h2>Something went wrong:<br>${err.message}</h2>`;
+          console.error("Error contacting Make:", err);
+          document.body.innerHTML = `<h2>Something went wrong. Please try again later.</h2><pre>${err.message}</pre>`;
         });
     </script>
   </body>
