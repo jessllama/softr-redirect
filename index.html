@@ -23,15 +23,10 @@
     </div>
 
     <script>
-      // Get query parameters from Tally form
       const urlParams = new URLSearchParams(window.location.search);
       const email = urlParams.get("email");
       const name = urlParams.get("name");
 
-      // Log what's being sent
-      console.log("Sending to Make webhook:", { email, name });
-
-      // Send POST request to Make webhook (which calls Softr)
       fetch("https://hook.us2.make.com/pyxu2ijoicq6bfr3eeixi8hfpu8juor7", {
         method: "POST",
         headers: {
@@ -41,17 +36,14 @@
       })
         .then(res => res.json())
         .then(data => {
-          console.log("Make webhook response:", data);
-
           if (data.redirect) {
             window.location.href = data.redirect;
           } else {
-            document.body.innerHTML = `<h2>Waiting for link or error...<br>${JSON.stringify(data)}</h2>`;
+            document.body.innerHTML = `<h2>No redirect link yet.<br>${JSON.stringify(data)}</h2>`;
           }
         })
         .catch(err => {
-          console.error("Webhook error:", err);
-          document.body.innerHTML = `<h2>Error:<br>${err.message}</h2>`;
+          document.body.innerHTML = `<h2>Something went wrong:<br>${err.message}</h2>`;
         });
     </script>
   </body>
