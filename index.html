@@ -1,57 +1,46 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Logging you in...</title>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      body {
-        font-family: sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background: #fefefe;
-        text-align: center;
-        padding: 20px;
-      }
-    </style>
-  </head>
-  <body>
-    <div>
-      <h2>Welcome! Redirecting you to your pilates portal...</h2>
-    </div>
-
+    <title>Redirecting...</title>
     <script>
-      const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get("email");
-      const name = urlParams.get("name");
+      async function generateMagicLink() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get("email");
+        const name = urlParams.get("name");
 
-      if (!email || !name) {
-        document.body.innerHTML = `<h2>Missing email or name in the URL. 😬</h2>`;
-        throw new Error("Missing email or name");
-      }
+        if (!email || !name) {
+          document.body.innerText = "Missing required parameters.";
+          return;
+        }
 
-      fetch("https://hook.us2.make.com/pyxu2ijoicq6bfr3eeixi8hfpu8juor7", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, name })
-      })
-        .then(res => res.json())
-        .then(data => {
-          console.log("Make webhook response:", data);
+        try {
+          const response = await fetch("https://hook.us2.make.com/pyxu2ijoicq6bfr3eeixi8hfpu8juor7", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, name })
+          });
+
+          const data = await response.json();
+
           if (data.redirect) {
             window.location.href = data.redirect;
           } else {
-            document.body.innerHTML = `<h2>Hmm, no link received. Please try again or contact support.</h2><pre>${JSON.stringify(data)}</pre>`;
+            document.body.innerText = "No redirect link returned.";
+            console.error("Response:", data);
           }
-        })
-        .catch(err => {
-          console.error("Error contacting Make:", err);
-          document.body.innerHTML = `<h2>Something went wrong. Please try again later.</h2><pre>${err.message}</pre>`;
-        });
+        } catch (error) {
+          console.error("Error contacting Make:", error);
+          document.body.innerText = "Something went wrong. Please try again later.";
+        }
+      }
+
+      generateMagicLink();
     </script>
+  </head>
+  <body>
+    Redirecting you to your dashboard...
   </body>
 </html>
